@@ -1,4 +1,4 @@
-# 1. Import Libraries
+# 1. Libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -76,7 +76,7 @@ base_models = {
     'xgboost': XGBClassifier(eval_metric='logloss', use_label_encoder=False, random_state=42, n_jobs=-1)
 }
 
-# Hold-out predictions for meta-model training
+# Hold out predictions for meta model training
 meta_train_features = np.zeros((X_train_smote.shape[0], len(base_models)))
 meta_test_features = np.zeros((X_test.shape[0], len(base_models)))
 
@@ -84,11 +84,11 @@ for i, (name, model) in enumerate(base_models.items()):
     print(f"Training {name}...")
     model.fit(X_train_smote, y_train_smote)
     
-    # Generate features for the meta-model
+    # Generate features for the meta model
     meta_train_features[:, i] = model.predict_proba(X_train_smote)[:, 1]
     meta_test_features[:, i] = model.predict_proba(X_test)[:, 1]
 
-# Level 1: Meta-Model
+# Level 1: Meta Model
 print("Training meta-model (Logistic Regression)...")
 meta_model = LogisticRegression()
 meta_model.fit(meta_train_features, y_train_smote)
@@ -96,7 +96,7 @@ meta_model.fit(meta_train_features, y_train_smote)
 
 # 6. Evaluation
 print("\n--- Evaluating Stacked Ensemble Model ---")
-# Make final predictions
+
 y_pred_stacked = meta_model.predict(meta_test_features)
 y_prob_stacked = meta_model.predict_proba(meta_test_features)[:, 1]
 
